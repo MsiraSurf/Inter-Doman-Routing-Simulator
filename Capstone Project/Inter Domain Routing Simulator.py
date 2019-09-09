@@ -23,7 +23,7 @@ m = Basemap(projection='mill',llcrnrlat=-46 , urcrnrlat=65, llcrnrlon=-20 , urcr
 # Configuring the GUI
 main = Tk()
 main.title("IRDP")
-main.geometry("345x440")
+main.geometry("365x440")
 main.config(bg = 'black')
 
 
@@ -44,7 +44,7 @@ def deploy_nodes():
     
     node1 = node1_input_box.get()
     node2 = node2_input_box.get()
-    weight_user = weight_input_box.get()
+    weight_user = weight_spinner.get()
     tierType1 = var3.get()
     tierType2 = var4.get()
     node1_country = var.get()
@@ -99,7 +99,7 @@ def draw_graph():
         col = ''
         col2 = ''
         
-        # Note on the UI x ranges from 0.971534 to 1.01547 & y ranges from 1.85451 to 2.01905
+        # Note on the UI x ranges from 0.971534 to 1.01547 & y ranges from 1.85451 to 2.01905 - This was before the map so its void now.
         
         # Getting the tier so i can display node in a suitable position in Graph interface
         node1_tier = int(path[3])
@@ -290,26 +290,39 @@ def calc_bellman():
     nx.draw_networkx_edges(G,pos,edgelist=path_edges,edge_color='r',width=10)
     plt.axis('equal')
     #ani = animation.FuncAnimation(fig, update, frames=6, interval=1000, repeat=True)
+    plt.ion()
+    plt.draw()
     plt.show()
 
 def calc_dijskra():
     
+    no_of_packets = pyautogui.prompt("How many packets do you want to send?")
+    source_and_dest_nodes = pyautogui.prompt("Enter source and destination nodes seperated by a comma")
+    array_nodes = source_and_dest_nodes.split(",")
     
-    
-    source_node = pyautogui.prompt("Enter source node")
-    dest_node = pyautogui.prompt("Enter destination node")
-    pos = nx.get_node_attributes(G, 'pos')
-    path = nx.shortest_path(G, source = int(source_node) , target = int(dest_node))
-    path_edges = zip(path,path[1:])
-    path_edges = set(path_edges)
-    nx.draw_networkx_nodes(G,pos,nodelist=path,node_color='r')
-    nx.draw_networkx_edges(G,pos,edgelist=path_edges,edge_color='r',width=10)
-    plt.axis('equal')
-    #ani = animation.FuncAnimation(fig, update, frames=6, interval=1000, repeat=True)
-    plt.show()
-    
-    #draw_graph()
-    #draw_graph()
+    arr_colors = ['r','b','g','r','b','g']
+    arr_edges = ['solid','dashed','dotted','dashdot']
+    y = 0
+    for x in range(int(no_of_packets)):
+        
+        pos = nx.get_node_attributes(G, 'pos')
+        path = nx.shortest_path(G, source = int(array_nodes[0]) , target = int(array_nodes[1]))
+        path_edges = zip(path,path[1:])
+        path_edges = set(path_edges)
+        if y > 5:
+            y = 0
+        nx.draw_networkx_nodes(G,pos,nodelist=path,node_color='r')
+        nx.draw_networkx_edges(G,pos,edgelist=path_edges,edge_color=arr_colors[y],width=10, style = arr_edges[random.randint(0,3)])
+        y = y + 1
+        plt.axis('equal')
+        #ani = animation.FuncAnimation(fig, update, frames=6, interval=1000, repeat=True)
+        plt.ion()
+        plt.draw()
+        plt.show()
+        
+        #draw_graph()
+        #draw_graph()
+        plt.pause(1)
 
 # used to prompt the user if they want to exit, also delete all the nodes in the text file.    
 def on_closing():
@@ -526,8 +539,10 @@ node2_input_box.grid(row = 1, column = 1, sticky = W)
 
 # For Weight
 Label(Frame_one, text = "Edge weight between Node 1 & Node 2: ", fg = 'white', bg = 'black').grid(row = 3, column = 0, sticky = W)
-weight_input_box = Entry(Frame_one, width = 5)
-weight_input_box.grid(row = 3, column = 1, sticky = W)
+# weight_input_box = Entry(Frame_one, width = 5)
+weight_spinner = Spinbox(Frame_one, from_ = 0, to  = 100, width = 5)
+weight_spinner.grid(row = 3, column = 1, sticky = W)
+# weight_input_box.grid(row = 3, column = 1, sticky = W)
 Label(main, text = "", bg = 'black').grid(row = 4, column = 0, sticky = N)
 
 # End of Frame 1 -------------------------------------------------------------------------------------------------------
