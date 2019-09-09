@@ -62,8 +62,6 @@ def deploy_nodes(): # This function is used to store the nodes into the textfile
     # clear the text fields so use can insert another pair of nodes
     node1_input_box.delete(0, END)
     node2_input_box.delete(0,END)
-    weight_input_box.delete(0,END)
-    output.delete(0,END)
     #var.set("South Africa")
     #var2.set("South Africa")
     
@@ -234,7 +232,7 @@ def draw_graph(): # This function is used to draw the graph. Using networkx to c
     plt.title("Network Provided to African countries by ISP's.")
      
     # m.shaderelief()
-    plt.tight_layout()
+    # plt.tight_layout()
     
     plt.show() 
     
@@ -320,7 +318,7 @@ def calc_dijskra(): # shows the shortest path between two nodes using dijskras a
     for x in range(int(no_of_packets)):
         
         pos = nx.get_node_attributes(G, 'pos')
-        path = nx.shortest_path(G, source = int(array_nodes[0]) , target = int(array_nodes[1]))
+        path = nx.shortest_path(G, source = array_nodes[0] , target = array_nodes[1])
         path_edges = zip(path,path[1:])
         path_edges = set(path_edges)
         if y > 5:
@@ -515,7 +513,7 @@ def import_cvs(): # function used to import an existing csv. the user will have 
     plt.title("Network Provided to African countries by ISP's.")
      
     # m.shaderelief()
-    plt.tight_layout()
+    # plt.tight_layout()
     
     plt.show()    
     
