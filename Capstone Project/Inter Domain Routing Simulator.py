@@ -18,7 +18,7 @@ import matplotlib.animation as animation
 # I should plot like (latitude, longitute, latlon = True)
 
 fig = plt.figure(figsize=(9, 9), edgecolor='r')
-m = Basemap(projection='mill')
+m = Basemap(projection='mill',llcrnrlat=-46 , urcrnrlat=65, llcrnrlon=-20 , urcrnrlon=72)
 
 # Configuring the GUI
 main = Tk()
@@ -79,7 +79,7 @@ def draw_graph():
     global var
     global var2
         
-    
+    # color map to maap different color for each node in a particular tier
     color_map = []
     
     t_one = []
@@ -136,10 +136,6 @@ def draw_graph():
             col2 = 'blue'
             if node2 not in t_three:
                 t_three.append(node2)             
-            
-    #    if node1_x == node2_y + 10.013474:
-     #       node1_x = node1_x - 0.013474
-
 
         if(path[5] == "South Africa"):
             node1_y = -29.16895
@@ -162,13 +158,18 @@ def draw_graph():
         elif(path[5]  == "Nigeria"):
             node1_y = 8.648911
             node1_x = 7.907745      
-        elif(path[5]  == "UK"):
+        elif(path[5]  == "United Kingdom"):
             node1_y = 53.108865
             node1_x = -1.402979
-
+        elif(path[5] == "Algeria"):
+            node1_y = 28.033886
+            node1_x = 1.659626
+        elif(path[5] == "Egypt"):
+            node1_y = 27.024681
+            node1_x = 28.802349             
             
+        # Converting x and y to latitude and longitude
         mx,my = m(node1_x,node1_y)
-        print(path[6])
             
         if(path[6]  == "South Africa"):
             node2_y = -29.16895
@@ -191,14 +192,20 @@ def draw_graph():
         elif(path[6] == "Nigeria"):
             node2_y = 8.648911
             node2_x = 7.907745      
-        elif(path[6] == "UK"):
+        elif(path[6] == "United Kingdom"):
             node2_y = 53.108865
-            node2_x = -1.402979    
-            
+            node2_x = -1.402979
+        elif(path[6] == "Algeria"):
+            node1_y = 28.033886
+            node1_x = 1.659626
+        elif(path[6] == "Egypt"):
+            node1_y = 27.024681
+            node1_x = 28.802349              
+        
+        # Converting x and y to latitude and longitude 
         mx2,my2 = m(node2_x,node2_y)
         
         # Adding nodes, edge and weight to the graph 
-        
         G.add_node(node1, pos = (mx,my), color = col)
         G.add_node(node2, pos = (mx2,my2), color = col2)
         G.add_edge(node1, node2, weight = weight_user)
@@ -214,7 +221,6 @@ def draw_graph():
     weight = nx.get_edge_attributes(G, 'weight')  
     pos = nx.get_node_attributes(G, 'pos')
     
-    
     # Statement used to draw the graph and show node labels
     nx.draw(G, pos, with_labels = True)
     nx.draw_networkx_nodes(G, pos, with_labels = True, nodelist = t_one, node_color='r', node_shape='o', node_size=1000)
@@ -225,27 +231,12 @@ def draw_graph():
     m.drawcountries(linewidth = 1)
     m.drawstates(linewidth = 0.2)
     m.drawcoastlines(linewidth=1)
-    #m.drawmapboundary(fill_color='aqua')
-    #m.fillcontinents(color = '#c2a561', lake_color='aqua')
     plt.title("Network Provided to African countries by ISP's.")
-    # m.etopo()
-    
+     
     # m.shaderelief()
     plt.tight_layout()
     
-    #plt.savefig("./images/map_1.png", format = "png", dpi = 300)
-    
-    
     plt.show() 
-    
-    
-    # Statement that is used to show the graph interface
-    #plt.clf()
-    
-    output.insert(END, nx.info(G))
-    
-    
-    #plt.show()
     
 
 #deleting a node from the graph
@@ -331,15 +322,18 @@ def on_closing():
         root.destroy()
 
 def import_cvs():
-    #pass
+    
     filename = pyautogui.prompt("Enter the name/location of the CSV file.")    
+    
     # denoting that these are globally institiated
     global pos1
     global pos2
     global pos3
     
+    global var
+    global var2
         
-    
+    # color map to maap different color for each node in a particular tier
     color_map = []
     
     t_one = []
@@ -348,7 +342,7 @@ def import_cvs():
     
     
     # reading from the nodes.txt file
-    file = open(filename, "r")
+    file = open(filename+".txt", "r")
     for line in file:
         path = line.split(",")
         
@@ -366,11 +360,11 @@ def import_cvs():
         # Getting the tier so i can display node in a suitable position in Graph interface
         node1_tier = int(path[3])
         node2_tier = int(path[4])
-       
-        if node1_tier == 1:
-            col = "red"
+        
+        if node1_tier == 1:           
+            col = 'red'
             if node1 not in t_one:
-                t_one.append(node1)             
+                t_one.append(node1)
             
         elif node1_tier == 2:            
             col = 'green'
@@ -396,69 +390,84 @@ def import_cvs():
             col2 = 'blue'
             if node2 not in t_three:
                 t_three.append(node2)             
-            
-    #    if node1_x == node2_y + 10.013474:
-     #       node1_x = node1_x - 0.013474
-     
-        if(var.get() == "South Africa"):
+
+        if(path[5] == "South Africa"):
             node1_y = -29.16895
             node1_x = 26.568181
-        elif(var.get() == "Zimbabwe"):
+        elif(path[5] == "Zimbabwe"):
             node1_y = -19.329287
             node1_x = 30.170774
-        elif(var.get() == "Congo"):
+        elif(path[5]  == "Congo"):
             node1_y = -2.479389
             node1_x = 23.987360
-        elif(var.get() == "Mozambique"):
+        elif(path[5]  == "Mozambique"):
             node1_y = -18.164121
             node1_x = 35.673637
-        elif(var.get() == "Botswana"):
+        elif(path[5]  == "Botswana"):
             node1_y = -22.773649
             node1_x = 24.075226
-        elif(var.get() == "Malawi"):
+        elif(path[5]  == "Malawi"):
             node1_y = -13.856747
             node1_x = 34.092036  
-        elif(var.get() == "Nigeria"):
+        elif(path[5]  == "Nigeria"):
             node1_y = 8.648911
             node1_x = 7.907745      
-        elif(var.get() == "UK"):
+        elif(path[5]  == "United Kingdom"):
             node1_y = 53.108865
             node1_x = -1.402979
+        elif(path[5] == "Algeria"):
+            node1_y = 28.033886
+            node1_x = 1.659626
+        elif(path[5] == "Egypt"):
+            node1_y = 27.024681
+            node1_x = 28.802349             
             
+        # Converting x and y to latitude and longitude
         mx,my = m(node1_x,node1_y)
             
-        if(var2.get() == "South Africa"):
+        if(path[6]  == "South Africa"):
             node2_y = -29.16895
             node2_x = 26.568181
-        elif(var2.get() == "Zimbabwe"):
+        elif(path[6] == "Zimbabwe"):
             node2_y = -19.329287
             node2_x = 30.170774
-        elif(var2.get() == "Congo"):
+        elif(path[6] == "Congo"):
             node2_y = -2.479389
             node2_x = 23.987360
-        elif(var2.get() == "Mozambique"):
+        elif(path[6] == "Mozambique"):
             node2_y = -18.164121
             node2_x = 35.673637
-        elif(var2.get() == "Botswana"):
+        elif(path[6] == "Botswana"):
             node2_y = -22.773649
             node2_x = 24.075226
-        elif(var2.get() == "Malawi"):
+        elif(path[6] == "Malawi"):
             node2_y = -13.856747
             node2_x = 34.092036  
-        elif(var2.get() == "Nigeria"):
+        elif(path[6] == "Nigeria"):
             node2_y = 8.648911
             node2_x = 7.907745      
-        elif(var2.get() == "UK"):
+        elif(path[6] == "United Kingdom"):
             node2_y = 53.108865
-            node2_x = -1.402979         
-
+            node2_x = -1.402979
+        elif(path[6] == "Algeria"):
+            node1_y = 28.033886
+            node1_x = 1.659626
+        elif(path[6] == "Egypt"):
+            node1_y = 27.024681
+            node1_x = 28.802349              
+        
+        # Converting x and y to latitude and longitude 
         mx2,my2 = m(node2_x,node2_y)
         
         # Adding nodes, edge and weight to the graph 
-        
         G.add_node(node1, pos = (mx,my), color = col)
         G.add_node(node2, pos = (mx2,my2), color = col2)
         G.add_edge(node1, node2, weight = weight_user)
+        
+        pos1 = node1_x + 5.013474
+        pos2 = node2_x + 5.013474
+        pos3 = pos3 + 5.013474;
+        
         
     file.close
       
@@ -466,29 +475,22 @@ def import_cvs():
     weight = nx.get_edge_attributes(G, 'weight')  
     pos = nx.get_node_attributes(G, 'pos')
     
-    
     # Statement used to draw the graph and show node labels
     nx.draw(G, pos, with_labels = True)
-    nx.draw_networkx_nodes(G, pos, with_labels = True, nodelist = t_one, node_color='r', node_shape='o', node_size=2000)
-    nx.draw_networkx_nodes(G, pos, with_labels = True, nodelist = t_two, node_color='g', node_shape='s', node_size=1000)
+    nx.draw_networkx_nodes(G, pos, with_labels = True, nodelist = t_one, node_color='r', node_shape='o', node_size=1000)
+    nx.draw_networkx_nodes(G, pos, with_labels = True, nodelist = t_two, node_color='g', node_shape='s', node_size=500)
     nx.draw_networkx_nodes(G, pos, with_labels = True, nodelist = t_three, node_shape = 'o', node_color='purple')
     #nx.draw_networkx_edge_labels(G, pos, edge_labels = weight)
         
     m.drawcountries(linewidth = 1)
     m.drawstates(linewidth = 0.2)
     m.drawcoastlines(linewidth=1)
-    #m.drawmapboundary(fill_color='aqua')
-    #m.fillcontinents(color = '#c2a561', lake_color='aqua')
-    plt.title("Network Provided to African countries by global ISP's.")
-    # m.etopo()
-    
+    plt.title("Network Provided to African countries by ISP's.")
+     
     # m.shaderelief()
     plt.tight_layout()
     
-    #plt.savefig("./images/map_1.png", format = "png", dpi = 300)
-    
-    
-    plt.show() 
+    plt.show()    
     
 def export_cvs():
     #pass
@@ -546,14 +548,14 @@ var2.set("South Africa") # initial value
 Label(Frame_two, text = " Enter Tier No. for Node 1: ", fg = 'white', bg = 'black').grid(row = 0, column = 0, sticky = W)
 tier1_input_box = Entry(Frame_two, width = 5)
 tier1_input_box.grid(row = 0, column = 1, sticky = W)
-option = OptionMenu(Frame_two, var, "South Africa", "Zimbabwe", "United Kingdom", "Mozambique", "USA", "Malawi", "Russia", "Nigeria", "Congo", "Canada")
+option = OptionMenu(Frame_two, var, "South Africa", "Zimbabwe", "United Kingdom", "Mozambique", "USA", "Malawi", "Algeria", "Nigeria", "Congo", "Egypt")
 option.grid(row = 0, column = 2, padx=(10, 10))
 
 # Input For Tier 2 value
 Label(Frame_two, text = " Enter Tier No. for Node 2: ", fg = 'white', bg = 'black').grid(row = 1, column = 0, pady=(10,10))
 tier2_input_box = Entry(Frame_two, width = 5)
 tier2_input_box.grid(row = 1, column = 1, sticky = W)
-option2 = OptionMenu(Frame_two, var2, "South Africa", "Zimbabwe", "United Kingdom", "Mozambique", "USA", "Malawi", "Russia", "Nigeria", "Congo", "Canada")
+option2 = OptionMenu(Frame_two, var2, "South Africa", "Zimbabwe", "United Kingdom", "Mozambique", "USA", "Malawi", "Algeria", "Nigeria", "Congo", "Egypt")
 option2.grid(row = 1, column = 2, padx=(10, 10))
 
 Label(Frame_two, text = "", bg = 'black').grid(row = 3, column = 0, sticky = W)
