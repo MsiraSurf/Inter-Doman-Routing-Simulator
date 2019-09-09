@@ -45,8 +45,8 @@ def deploy_nodes():
     node1 = node1_input_box.get()
     node2 = node2_input_box.get()
     weight_user = weight_input_box.get()
-    tierType1=tier1_input_box.get()
-    tierType2=tier2_input_box.get()
+    tierType1 = var3.get()
+    tierType2 = var4.get()
     node1_country = var.get()
     node2_country = var2.get()
     
@@ -63,8 +63,6 @@ def deploy_nodes():
     node1_input_box.delete(0, END)
     node2_input_box.delete(0,END)
     weight_input_box.delete(0,END)
-    tier1_input_box.delete(0,END)
-    tier2_input_box.delete(0,END)
     output.delete(0,END)
     #var.set("South Africa")
     #var2.set("South Africa")
@@ -544,17 +542,27 @@ var.set("South Africa") # initial value
 var2 = StringVar(main)
 var2.set("South Africa") # initial value
 
+var3 = StringVar(main)
+var3.set("1") # initial value
+
+var4 = StringVar(main)
+var4.set("1") # initial value
+
 # Input For Tier 1 valuez
 Label(Frame_two, text = " Enter Tier No. for Node 1: ", fg = 'white', bg = 'black').grid(row = 0, column = 0, sticky = W)
-tier1_input_box = Entry(Frame_two, width = 5)
-tier1_input_box.grid(row = 0, column = 1, sticky = W)
+# tier1_input_box = Entry(Frame_two, width = 5)
+# tier1_input_box.grid(row = 0, column = 1, sticky = W)
+option3 = OptionMenu(Frame_two, var3, "1","2","3")
+option3.grid(row = 0, column = 1, padx=(10, 10))
 option = OptionMenu(Frame_two, var, "South Africa", "Zimbabwe", "United Kingdom", "Mozambique", "USA", "Malawi", "Algeria", "Nigeria", "Congo", "Egypt")
 option.grid(row = 0, column = 2, padx=(10, 10))
 
 # Input For Tier 2 value
 Label(Frame_two, text = " Enter Tier No. for Node 2: ", fg = 'white', bg = 'black').grid(row = 1, column = 0, pady=(10,10))
-tier2_input_box = Entry(Frame_two, width = 5)
-tier2_input_box.grid(row = 1, column = 1, sticky = W)
+# tier2_input_box = Entry(Frame_two, width = 5)
+# tier2_input_box.grid(row = 1, column = 1, sticky = W)
+option4 = OptionMenu(Frame_two, var4, "1","2","3")
+option4.grid(row = 1, column = 1, padx=(10, 10))
 option2 = OptionMenu(Frame_two, var2, "South Africa", "Zimbabwe", "United Kingdom", "Mozambique", "USA", "Malawi", "Algeria", "Nigeria", "Congo", "Egypt")
 option2.grid(row = 1, column = 2, padx=(10, 10))
 
