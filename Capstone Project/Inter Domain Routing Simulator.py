@@ -1,15 +1,15 @@
 # Inter-Domain Routing Simulator
 
 # Libraries for the graph and tkinter for the GUI
-import networkx as nx
-import matplotlib.pyplot as plt
+import networkx as nx # Library that is used to construct the graph that makes up the topology
+import matplotlib.pyplot as plt # Library that is used to plot and display the graph.
 #import seaborn as sb
-from tkinter import *
+from tkinter import * # Library used for creating the graphical user interface
 import random
-import sys
+import sys # to interact with the software system
 import pyautogui  # this libr\ary is used to diplay dialog boxes such an alert and prompt to communicate with the user.
-from mpl_toolkits.basemap import Basemap as Basemap
-import matplotlib.animation as animation
+from mpl_toolkits.basemap import Basemap as Basemap # Library that is used to draw the map to plot nodes into.
+import matplotlib.animation as animation # library used to animate the simulation
 
 
 # Longitute is horizontal going from -180 to 180
@@ -17,8 +17,8 @@ import matplotlib.animation as animation
 
 # I should plot like (latitude, longitute, latlon = True)
 
-fig = plt.figure(figsize=(9, 9), edgecolor='r')
-m = Basemap(projection='mill',llcrnrlat=-46 , urcrnrlat=65, llcrnrlon=-20 , urcrnrlon=72)
+fig = plt.figure(figsize=(9, 9), edgecolor='r') # color the edges of The Graph interface 
+m = Basemap(projection='mill',llcrnrlat=-46 , urcrnrlat=65, llcrnrlon=-20 , urcrnrlon=72) # To configure the map.
 
 # Configuring the GUI
 main = Tk()
@@ -37,7 +37,7 @@ pos3 = 10
 
 # (Start) Define my functions below ---------------------------------------------------------------------------------------
 
-def deploy_nodes():
+def deploy_nodes(): # This function is used to store the nodes into the textfile. The user inserts a set of two nodes at a time and this function will stored all that data.
     #getting user input from the text boxes
     
     plt.clf()
@@ -67,7 +67,7 @@ def deploy_nodes():
     #var.set("South Africa")
     #var2.set("South Africa")
     
-def draw_graph():
+def draw_graph(): # This function is used to draw the graph. Using networkx to construct the graph and using matplotlib to visualize it.
         
     # denoting that these are globally institiated
     global pos1
@@ -91,8 +91,8 @@ def draw_graph():
         path = line.split(",")
         
         # Get Nodes and Weight
-        node1 = int(path[0])
-        node2 = int(path[1])
+        node1 = path[0]
+        node2 = path[1]
         weight_user = path[2]
         
         # Assign colors to nodes, nodes in T1 = Red, T2 = Green, T3 = blue
@@ -194,11 +194,11 @@ def draw_graph():
             node2_y = 53.108865
             node2_x = -1.402979
         elif(path[6] == "Algeria"):
-            node1_y = 28.033886
-            node1_x = 1.659626
+            node2_y = 28.033886
+            node2_x = 1.659626
         elif(path[6] == "Egypt"):
-            node1_y = 27.024681
-            node1_x = 28.802349              
+            node2_y = 27.024681
+            node2_x = 28.802349              
         
         # Converting x and y to latitude and longitude 
         mx2,my2 = m(node2_x,node2_y)
@@ -216,7 +216,9 @@ def draw_graph():
     file.close
       
     # To show weights on graph interface
-    weight = nx.get_edge_attributes(G, 'weight')  
+    weight = nx.get_edge_attributes(G, 'weight')
+    
+    # getting the position of the nodes the in the form of a dictionary data structure
     pos = nx.get_node_attributes(G, 'pos')
     
     # Statement used to draw the graph and show node labels
@@ -237,7 +239,7 @@ def draw_graph():
     plt.show() 
     
 
-#deleting a node from the graph
+#deleting a node from the graph, the user will specify the node and it will bne removed from the topology.
 def delete_node():
     #pass
     plt.clf()
@@ -258,11 +260,11 @@ def delete_node():
             #file.write("check")
     
     file.close()
-    G.remove_node(int(node))
+    G.remove_node(node)
     draw_graph()
 v = StringVar()
 
-def show_shortest_path():
+def show_shortest_path(): # This function shows the shortest path between two nodes.
     
     # To show a dialog with radio buttons for algorithm options
     dialogb = Tk()
@@ -276,25 +278,37 @@ def show_shortest_path():
     radio_button2.grid(row = 2, column = 0, sticky = W )
     
 
-def calc_bellman():
+def calc_bellman(): # shows the shortest path between two nodes using the the bellman ford algorith.
     
+    no_of_packets = pyautogui.prompt("How many packets do you want to send?")
+    source_and_dest_nodes = pyautogui.prompt("Enter source and destination nodes seperated by a comma")
+    array_nodes = source_and_dest_nodes.split(",")
     
-    
-    source_node = pyautogui.prompt("Enter source node")
-    dest_node = pyautogui.prompt("Enter destination node")
-    pos = nx.get_node_attributes(G, 'pos')
-    path = nx.shortest_path(G, source = int(source_node) , target = int(dest_node))
-    path_edges = zip(path,path[1:])
-    path_edges = set(path_edges)
-    nx.draw_networkx_nodes(G,pos,nodelist=path,node_color='r')
-    nx.draw_networkx_edges(G,pos,edgelist=path_edges,edge_color='r',width=10)
-    plt.axis('equal')
-    #ani = animation.FuncAnimation(fig, update, frames=6, interval=1000, repeat=True)
-    plt.ion()
-    plt.draw()
-    plt.show()
+    arr_colors = ['r','b','g','r','b','g']
+    arr_edges = ['solid','dashed','dotted','dashdot']
+    y = 0
+    for x in range(int(no_of_packets)):
+        
+        pos = nx.get_node_attributes(G, 'pos')
+        path = nx.shortest_path(G, source = int(array_nodes[0]) , target = int(array_nodes[1]))
+        path_edges = zip(path,path[1:])
+        path_edges = set(path_edges)
+        if y > 5:
+            y = 0
+        nx.draw_networkx_nodes(G,pos,nodelist=path,node_color='r')
+        nx.draw_networkx_edges(G,pos,edgelist=path_edges,edge_color=arr_colors[y],width=10, style = arr_edges[random.randint(0,3)])
+        y = y + 1
+        plt.axis('equal')
+        #ani = animation.FuncAnimation(fig, update, frames=6, interval=1000, repeat=True)
+        plt.ion()
+        plt.draw()
+        plt.show()
+        
+        #draw_graph()
+        #draw_graph()
+        plt.pause(1)
 
-def calc_dijskra():
+def calc_dijskra(): # shows the shortest path between two nodes using dijskras algorith
     
     no_of_packets = pyautogui.prompt("How many packets do you want to send?")
     source_and_dest_nodes = pyautogui.prompt("Enter source and destination nodes seperated by a comma")
@@ -332,7 +346,7 @@ def on_closing():
         sys.exit(0)
         root.destroy()
 
-def import_cvs():
+def import_cvs(): # function used to import an existing csv. the user will have to specify the name or the path of the csv file.
     
     filename = pyautogui.prompt("Enter the name/location of the CSV file.")    
     
@@ -358,15 +372,15 @@ def import_cvs():
         path = line.split(",")
         
         # Get Nodes and Weight
-        node1 = int(path[0])
-        node2 = int(path[1])
+        node1 = path[0]
+        node2 = path[1]
         weight_user = path[2]
         
         # Assign colors to nodes, nodes in T1 = Red, T2 = Green, T3 = blue
         col = ''
         col2 = ''
         
-        # Note on the UI x ranges from 0.971534 to 1.01547 & y ranges from 1.85451 to 2.01905
+        # Note on the UI x ranges from 0.971534 to 1.01547 & y ranges from 1.85451 to 2.01905 - This was before the map so its void now.
         
         # Getting the tier so i can display node in a suitable position in Graph interface
         node1_tier = int(path[3])
@@ -461,11 +475,11 @@ def import_cvs():
             node2_y = 53.108865
             node2_x = -1.402979
         elif(path[6] == "Algeria"):
-            node1_y = 28.033886
-            node1_x = 1.659626
+            node2_y = 28.033886
+            node2_x = 1.659626
         elif(path[6] == "Egypt"):
-            node1_y = 27.024681
-            node1_x = 28.802349              
+            node2_y = 27.024681
+            node2_x = 28.802349              
         
         # Converting x and y to latitude and longitude 
         mx2,my2 = m(node2_x,node2_y)
@@ -483,7 +497,9 @@ def import_cvs():
     file.close
       
     # To show weights on graph interface
-    weight = nx.get_edge_attributes(G, 'weight')  
+    weight = nx.get_edge_attributes(G, 'weight')
+    
+    # getting the position of the nodes the in the form of a dictionary data structure
     pos = nx.get_node_attributes(G, 'pos')
     
     # Statement used to draw the graph and show node labels
@@ -503,7 +519,7 @@ def import_cvs():
     
     plt.show()    
     
-def export_cvs():
+def export_cvs(): # Function used to save a topology that the user created and specifed
     #pass
     filename = pyautogui.prompt("Enter the name you would like to save file as:")
     with open("nodes.txt") as f:
